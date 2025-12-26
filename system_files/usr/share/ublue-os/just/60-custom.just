@@ -3,7 +3,7 @@
 # Configure KDE Plasma with RunIO defaults:
 # - Icons-only task manager: Brave, Steam, Dolphin, Terminal
 # - Digital clock: 24h format, "MMM d" date format
-[group('System')]
+[group('RunIO')]
 setup-runio-kde:
     #!/usr/bin/bash
     set -euo pipefail
@@ -90,7 +90,7 @@ setup-runio-kde:
     echo "Quick restart: kquitapp6 plasmashell && kstart plasmashell"
 
 # Run first-boot setup for RunIO (useful after rebasing)
-[group('System')]
+[group('RunIO')]
 setup-runio:
     #!/usr/bin/bash
     set -euo pipefail
@@ -117,10 +117,9 @@ setup-runio:
 
     # Add ublue-os homebrew tap
     echo "Adding ublue-os homebrew tap..."
-    brew tap ublue-os/tap
-    echo "See: https://github.com/ublue-os/homebrew-tap"
-    if [[ -d /sys/class/dmi/id ]] && grep -qi "framework" /sys/class/dmi/id/board_vendor 2>/dev/null; then
-        echo "Framework laptop detected! Install 'framework' tool: brew install framework"
+    UBLUE_TAP_OK=false
+    if brew tap ublue-os/tap; then
+        UBLUE_TAP_OK=true
     fi
 
     echo ""
@@ -128,6 +127,9 @@ setup-runio:
     echo "You may need to log out and back in for all changes to take effect."
     echo ""
     echo "Tip: Run 'ujust install-runio-apps' to install recommended applications."
+    if $UBLUE_TAP_OK && [[ -d /sys/class/dmi/id ]] && grep -qi "framework" /sys/class/dmi/id/board_vendor 2>/dev/null; then
+        echo "Tip: Run 'brew install framework-tool' to install the Framework laptop tool."
+    fi
 
 # Install an AppImage file from a local file or URL (internal helper)
 [private]
@@ -193,7 +195,7 @@ install-vorta:
 install-pcloud:
     @echo "Download pCloud from: https://www.pcloud.com/download-free-online-cloud-file-storage.html"
 
-# Install Fastmail - Email client, add to Internet category, and add to taskbar after Brave
+# Install Fastmail - Email client, add to Internet category
 [group('Apps')]
 install-fastmail:
     #!/usr/bin/bash
@@ -234,61 +236,8 @@ install-fastmail:
         echo "Note: Flatpak desktop file not found, skipping app launcher configuration."
     fi
 
-    # Add Fastmail to taskbar after Brave
-    PLASMA_CONFIG="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-    FASTMAIL_LAUNCHER="applications:com.fastmail.Fastmail.desktop"
-
-    if [[ ! -f "$PLASMA_CONFIG" ]]; then
-        echo "Note: Plasma config not found, skipping taskbar configuration."
-        exit 0
-    fi
-
-    # Find the icontasks applet
-    APPLET_ID=$(grep -B5 "plugin=org.kde.plasma.icontasks" "$PLASMA_CONFIG" | grep -oP '\[Containments\]\[\d+\]\[Applets\]\[\d+\]' | head -1)
-
-    if [[ -z "$APPLET_ID" ]]; then
-        echo "Note: Icons-only task manager not found, skipping taskbar configuration."
-        exit 0
-    fi
-
-    # Extract containment and applet numbers
-    CONTAINMENT_NUM=$(echo "$APPLET_ID" | grep -oP 'Containments\]\[\K\d+')
-    APPLET_NUM=$(echo "$APPLET_ID" | grep -oP 'Applets\]\[\K\d+')
-
-    # Get current launchers
-    CURRENT_LAUNCHERS=$(kreadconfig6 --file "$PLASMA_CONFIG" \
-        --group "Containments" --group "$CONTAINMENT_NUM" \
-        --group "Applets" --group "$APPLET_NUM" \
-        --group "Configuration" --group "General" \
-        --key "launchers")
-
-    # Check if Fastmail is already in the taskbar
-    if echo "$CURRENT_LAUNCHERS" | grep -q "com.fastmail.Fastmail"; then
-        echo "Fastmail is already on the taskbar."
-        exit 0
-    fi
-
-    # Insert Fastmail after Brave (com.brave.Browser.desktop)
-    if echo "$CURRENT_LAUNCHERS" | grep -q "com.brave.Browser"; then
-        # Insert Fastmail after Brave
-        NEW_LAUNCHERS=$(echo "$CURRENT_LAUNCHERS" | sed "s|com.brave.Browser.desktop|com.brave.Browser.desktop,$FASTMAIL_LAUNCHER|")
-    else
-        # Brave not found, prepend Fastmail
-        NEW_LAUNCHERS="$FASTMAIL_LAUNCHER,$CURRENT_LAUNCHERS"
-    fi
-
-    # Update the taskbar
-    kwriteconfig6 --file "$PLASMA_CONFIG" \
-        --group "Containments" --group "$CONTAINMENT_NUM" \
-        --group "Applets" --group "$APPLET_NUM" \
-        --group "Configuration" --group "General" \
-        --key "launchers" "$NEW_LAUNCHERS"
-
-    echo "Fastmail added to taskbar after Brave."
-    echo "Restart Plasma for changes to take effect: kquitapp6 plasmashell && kstart plasmashell"
-
 # Install all RunIO apps (Gear Lever, Vorta, pCloud, Fastmail, etc.)
-[group('Apps')]
+[group('RunIO')]
 install-runio-apps: install-gearlever install-vorta install-pcloud install-fastmail
     #!/usr/bin/bash
     echo "All Run apps installed successfully!"
