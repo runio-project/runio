@@ -41,7 +41,10 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
 ### COPY SYSTEM FILES
 ## Copy ujust scripts and other system files into the image
 COPY system_files /
-    
+
+# Set build date in KDE System Information
+RUN sed -i "s/^Version=.*/Version=$(date +%Y-%m-%d)/" /etc/xdg/kcm-about-distrorc
+
 ### LINTING
 ## Verify final image and contents are correct.
 RUN bootc container lint

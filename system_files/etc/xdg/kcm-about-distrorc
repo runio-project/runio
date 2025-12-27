@@ -1,6 +1,7 @@
+# Version is set at build time in Containerfile
 [General]
 LogoPath=/usr/share/pixmaps/system-logo-white.png
-Name=RunIO
-Variant=Tyrion Keep
+Name=RunIO (Tyrion Keep)
+Variant=Based on Aurora
 Version=
 Website=https://github.com/runio-project/runio
