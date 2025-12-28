@@ -33,23 +33,17 @@ Then reboot.
 After installation, run the setup script:
 
 ```bash
-ujust setup-runio
+ujust setup-runio-brew
 ```
 
-## Building Locally
+## Build an ISO
+sudo just rebuild-iso
+```
 
-Requires [Just](https://github.com/casey/just) and Podman.
+When running RunIO for first time from ISO:
 
 ```bash
-# Build the container image
-just build
-
-# Build and run a VM (QCOW2)
-just build-qcow2
-just run-vm-qcow2
-
-# Build an ISO
-just build-iso
+ujust setup-runio-rebase
 ```
 
 ## Verification

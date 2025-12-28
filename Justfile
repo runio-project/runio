@@ -162,6 +162,9 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
     #!/usr/bin/env bash
     set -euo pipefail
 
+    # Clean up previous output folder if it exists
+    sudo rm -rf output/
+
     args="--type ${type} "
     args+="--use-librepo=True "
     args+="--rootfs=btrfs"
