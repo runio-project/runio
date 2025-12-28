@@ -5,9 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Working Style
 
 - Ask instead of assuming when not clear
-- Bazzite and Aurora (preferred) repos are available locally for reference:
-  - `~/Code/aurora`
-  - `~/Code/bazzite`
+- Aurora repo is available locally for reference in `~/Code/aurora`
 
 ## Project Overview
 

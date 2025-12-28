@@ -39,14 +39,56 @@ magick "$SOURCE_LOGO_WIDE" \
     -extent 128x32 \
     "$SYSTEM_FILES/usr/share/plymouth/themes/spinner/watermark.png"
 
-# KDE About dialog logo (252x252)
-echo "  -> KDE About logo (252x252)"
+# System logos (256x256)
+echo "  -> System logo (256x256)"
 magick "$SOURCE_LOGO" \
     -background none \
-    -resize 252x252 \
+    -resize 256x256 \
     -gravity center \
-    -extent 252x252 \
+    -extent 256x256 \
+    "$SYSTEM_FILES/usr/share/pixmaps/system-logo.png"
+
+echo "  -> System logo white (256x256)"
+magick "$SOURCE_LOGO" \
+    -background none \
+    -resize 256x256 \
+    -gravity center \
+    -extent 256x256 \
     "$SYSTEM_FILES/usr/share/pixmaps/system-logo-white.png"
+
+# Fedora-compatibility sprite logo (128x128)
+echo "  -> Fedora logo sprite (128x128)"
+magick "$SOURCE_LOGO" \
+    -background none \
+    -resize 128x128 \
+    -gravity center \
+    -extent 128x128 \
+    "$SYSTEM_FILES/usr/share/pixmaps/fedora-logo-sprite.png"
+
+# Fedora-compatibility banner logos (from wide logo)
+echo "  -> Fedora logo (400x100)"
+magick "$SOURCE_LOGO_WIDE" \
+    -background none \
+    -resize 400x100 \
+    -gravity center \
+    -extent 400x100 \
+    "$SYSTEM_FILES/usr/share/pixmaps/fedora-logo.png"
+
+echo "  -> Fedora logo small (128x32)"
+magick "$SOURCE_LOGO_WIDE" \
+    -background none \
+    -resize 128x32 \
+    -gravity center \
+    -extent 128x32 \
+    "$SYSTEM_FILES/usr/share/pixmaps/fedora-logo-small.png"
+
+echo "  -> Fedora logo medium (200x100)"
+magick "$SOURCE_LOGO_WIDE" \
+    -background none \
+    -resize 200x100 \
+    -gravity center \
+    -extent 200x100 \
+    "$SYSTEM_FILES/usr/share/pixmaps/fedora_logo_med.png"
 
 # KDE Plasma splash screen logo
 echo "  -> KDE splash logo"
