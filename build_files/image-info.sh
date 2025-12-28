@@ -6,7 +6,7 @@ set -ouex pipefail
 IMAGE_PRETTY_NAME="RunIO"
 IMAGE_LIKE="fedora"
 IMAGE_NAME="${IMAGE_NAME:-runio}"
-IMAGE_VENDOR="${IMAGE_VENDOR:-runio}"
+IMAGE_VENDOR="${IMAGE_VENDOR:-runio-project}"
 VERSION="${VERSION:-$(date +%Y%m%d)}"
 
 # Get Fedora version from the base system
@@ -38,15 +38,11 @@ sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"${IMAGE_PRETTY_NAME} (Version: ${VERSION
 sed -i "s|^NAME=.*|NAME=\"${IMAGE_PRETTY_NAME}\"|" /usr/lib/os-release
 sed -i "s|^DEFAULT_HOSTNAME=.*|DEFAULT_HOSTNAME=\"${IMAGE_NAME}\"|" /usr/lib/os-release
 
-# Replace ID=fedora and add ID_LIKE in one operation (more reliable than separate replacements)
-sed -i "s|^ID=fedora|ID=${IMAGE_NAME}\nID_LIKE=\"${IMAGE_LIKE}\"|" /usr/lib/os-release
+# Keep ID=fedora for compatibility with bootc-image-builder (BIB)
+# BIB requires a known distro ID to generate ISOs
+# Branding is handled via PRETTY_NAME, NAME, and VARIANT_ID instead
 
-# If ID wasn't "fedora", handle it separately
-if grep -q "^ID=aurora" /usr/lib/os-release; then
-    sed -i "s|^ID=aurora|ID=${IMAGE_NAME}|" /usr/lib/os-release
-fi
-
-# Ensure ID_LIKE exists (in case the above replacement didn't add it)
+# Add ID_LIKE if it doesn't exist
 if ! grep -q "^ID_LIKE=" /usr/lib/os-release; then
     echo "ID_LIKE=\"${IMAGE_LIKE}\"" >> /usr/lib/os-release
 fi

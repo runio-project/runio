@@ -8,7 +8,7 @@ FROM ghcr.io/ublue-os/aurora:stable
 
 # Image metadata
 ARG IMAGE_NAME="${IMAGE_NAME:-runio}"
-ARG IMAGE_VENDOR="${IMAGE_VENDOR:-runio}"
+ARG IMAGE_VENDOR="${IMAGE_VENDOR:-runio-project}"
 
 ### [IM]MUTABLE /opt
 ## Some bootable images, like Fedora, have /opt symlinked to /var/opt, in order to
