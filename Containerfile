@@ -26,7 +26,7 @@ RUN rm /opt && mkdir /opt
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     IMAGE_NAME="${IMAGE_NAME}" \
     IMAGE_VENDOR="${IMAGE_VENDOR}" \
-    /ctx/image-info.sh
+    bash /ctx/image-info.sh
 
 ### MODIFICATIONS
 ## make modifications desired in your image and install packages by modifying the build.sh script
@@ -36,7 +36,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
-    /ctx/build.sh
+    bash /ctx/build.sh
 
 ### COPY SYSTEM FILES
 ## Copy ujust scripts and other system files into the image
